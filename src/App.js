@@ -1,26 +1,110 @@
 import React from 'react';
-import logo from './logo.svg';
+import Header from './components/layout/header';
+import AddTodo from './components/AddTodo';
+import Todos from './components/Todos';
+import Search from './components/Search';
+import SubHeader from './components/layout/Subheader';
+import uuid from 'uuid';
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    list:[
+      {
+        id : uuid.v4(),
+        title : 'something title',
+        completed : false,
+      },
+      {
+        id : uuid.v4(),
+        title : 'something title2',
+        completed : false,
+      },
+      {
+        id : uuid.v4(),
+        title : 'something title3',
+        completed : false,
+      }
+    ],
+    todos:[]
+  }
+  delTodo = (id) => {
+    this.setState({
+      todos : this.state.todos.filter(todo => todo.id!==id),
+      list : this.state.todos})
+  }
+  markComplete = (id) => {
+    this.setState({todos : this.state.todos.map(todo =>{
+      if (todo.id === id){
+        todo.completed = !todo.completed;
+      }
+      return todo;
+    })})
+  }
+  addTodo =(title)=>{
+    let newTodo = {
+      id:uuid.v4(),
+      title:title,
+      completed:false
+    }
+    this.setState({
+      list:[...this.state.list,newTodo],
+      todos:[...this.state.todos,newTodo]
+    });
+
+  }
+
+  search = (title) => {
+    this.setState({
+      todos:this.state.todos.filter((todos)=>{
+      return todos.title.toLowerCase().includes(title.toLowerCase())
+    })
+    });
+    console.log(this.state.todos)
+  }
+
+  allTodo = () =>{
+    this.setState({
+      todos:this.state.list})
+
+  }
+
+  completedTodo = () =>{
+    this.setState({
+      todos:this.state.list.filter((todos)=>{
+        return todos.completed === true; 
+      })
+    })
+  }
+
+ remainingTodo = () =>{
+    this.setState({
+      todos:this.state.list.filter((todos)=>{
+        return todos.completed === false; 
+      })
+    })
+  }
+
+componentDidMount(){
+  this.setState({todos:this.state.list});
+}
+
+  render(){
+
+    return (
+      <div className="App">
+        <div className = 'container'>
+          <Header />
+          <SubHeader allTodo = {this.allTodo} completedTodo = {this.completedTodo} remainingTodo = {this.remainingTodo}/>
+          <Search search = {this.search} />
+          <AddTodo addTodo = {this.addTodo} />
+          <Todos todos = {this.state.todos} markComplete = {this.markComplete} delTodo = {this.delTodo}/>
+        </div>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
