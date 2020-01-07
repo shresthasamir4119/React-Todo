@@ -27,15 +27,17 @@ class App extends React.Component {
         completed : false,
       }
     ],
-    todos:[]
+    todos:[],
+    filtered:[],
   }
   delTodo = (id) => {
     this.setState({
       todos : this.state.todos.filter(todo => todo.id!==id),
-      list : this.state.todos})
+      list : this.state.list.filter(todo => todo.id!==id)
+    })
   }
   markComplete = (id) => {
-    this.setState({todos : this.state.todos.map(todo =>{
+    this.setState({list : this.state.list.map(todo =>{
       if (todo.id === id){
         todo.completed = !todo.completed;
       }
@@ -57,16 +59,19 @@ class App extends React.Component {
 
   search = (title) => {
     this.setState({
-      todos:this.state.todos.filter((todos)=>{
+
+      todos:this.state.filtered.filter((todos)=>{
       return todos.title.toLowerCase().includes(title.toLowerCase())
-    })
+    }),
     });
-    console.log(this.state.todos)
+
   }
 
   allTodo = () =>{
     this.setState({
-      todos:this.state.list})
+      todos:this.state.list,
+      filtered:this.state.list,
+    })
 
   }
 
@@ -74,7 +79,11 @@ class App extends React.Component {
     this.setState({
       todos:this.state.list.filter((todos)=>{
         return todos.completed === true; 
-      })
+      }),
+      filtered:this.state.list.filter((todos)=>{
+        return todos.completed === true; 
+      }),
+
     })
   }
 
@@ -82,12 +91,15 @@ class App extends React.Component {
     this.setState({
       todos:this.state.list.filter((todos)=>{
         return todos.completed === false; 
-      })
+      }),
+      filtered:this.state.list.filter((todos)=>{
+        return todos.completed === false; 
+      }),
     })
   }
 
 componentDidMount(){
-  this.setState({todos:this.state.list});
+  this.setState({todos:this.state.list,filtered:this.state.list});
 }
 
   render(){
